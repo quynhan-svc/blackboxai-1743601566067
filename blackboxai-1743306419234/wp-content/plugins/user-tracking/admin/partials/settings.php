@@ -68,7 +68,7 @@
                         <input type="text" name="user_tracking_settings[ga4_property_id]" 
                                value="<?php echo esc_attr(get_option('user_tracking_settings')['ga4_property_id'] ?? ''); ?>" 
                                class="regular-text">
-                        <p class="description">Format: properties/XXXXXXX</p>
+                        <p class="description">Định dạng: properties/XXXXXXX hoặc G-XXXXXXX</p>
                     </td>
                 </tr>
                 <tr>
@@ -77,7 +77,22 @@
                         <input type="password" name="user_tracking_settings[ga4_api_key]" 
                                value="<?php echo esc_attr(get_option('user_tracking_settings')['ga4_api_key'] ?? ''); ?>" 
                                class="regular-text">
-                        <p class="description">Create API key in Google Cloud Console</p>
+                        <p class="description">
+                            <strong>Hướng dẫn lấy API Key:</strong><br>
+                            1. Truy cập <a href="https://console.cloud.google.com/apis/credentials" target="_blank">Google Cloud Console</a><br>
+                            2. Chọn project tương ứng với GA4 property<br>
+                            3. Vào "APIs & Services" > "Credentials"<br>
+                            4. Nhấn "Create Credentials" > "API Key"<br>
+                            5. Sao chép key và dán vào ô trên
+                        </p>
+                        <p class="description">
+                            <strong>Hướng dẫn lấy Property ID:</strong><br>
+                            1. Truy cập <a href="https://analytics.google.com/" target="_blank">Google Analytics</a><br>
+                            2. Chọn property GA4 cần kết nối<br>
+                            3. Vào "Admin" (biểu tượng bánh răng)<br>
+                            4. Trong cột "Property", chọn "Data Streams"<br>
+                            5. Click vào stream > Sao chép "Measurement ID" (định dạng G-XXXXXXX)
+                        </p>
                     </td>
                 </tr>
             </table>
