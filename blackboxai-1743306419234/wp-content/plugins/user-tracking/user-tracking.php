@@ -2,7 +2,7 @@
 /**
  * Plugin Name: User Tracking for Google Ads
  * Description: Tracks user behavior from Google Ads and detects fraudulent clicks.
- * Version: 1.0.7
+ * Version: 1.0.9
  * Requires at least: 6.7.2
  * Requires PHP: 8.0
  * Author: Quỳnh An Solar Nha Trang
