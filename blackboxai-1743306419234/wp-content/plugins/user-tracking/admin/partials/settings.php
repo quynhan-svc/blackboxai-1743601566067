@@ -60,6 +60,59 @@
         </div>
 
         <div class="card">
+            <h3>GA4 Integration</h3>
+            <table class="form-table">
+                <tr>
+                    <th>GA4 Property ID</th>
+                    <td>
+                        <input type="text" name="user_tracking_settings[ga4_property_id]" 
+                               value="<?php echo esc_attr(get_option('user_tracking_settings')['ga4_property_id'] ?? ''); ?>" 
+                               class="regular-text">
+                        <p class="description">Format: properties/XXXXXXX</p>
+                    </td>
+                </tr>
+                <tr>
+                    <th>GA4 API Key</th>
+                    <td>
+                        <input type="password" name="user_tracking_settings[ga4_api_key]" 
+                               value="<?php echo esc_attr(get_option('user_tracking_settings')['ga4_api_key'] ?? ''); ?>" 
+                               class="regular-text">
+                        <p class="description">Create API key in Google Cloud Console</p>
+                    </td>
+                </tr>
+            </table>
+            <button id="test-ga4" class="button button-secondary">
+                <span class="dashicons dashicons-admin-site"></span> Test GA4 Connection
+            </button>
+            <div id="ga4-test-results" style="margin-top:10px;"></div>
+        </div>
+
+        <div class="card">
+            <h3>Environment Check</h3>
+            <?php
+            $db_check = UserTracking\Database::check_schema();
+            if ($db_check !== true) : ?>
+                <div class="notice notice-warning">
+                    <p><strong>Database cần cập nhật:</strong> Thiếu các bảng/cột sau:</p>
+                    <ul>
+                        <?php foreach ($db_check as $missing) : ?>
+                            <li><?php echo esc_html($missing); ?></li>
+                        <?php endforeach; ?>
+                    </ul>
+                    <form method="post" action="<?php echo admin_url('admin-post.php'); ?>">
+                        <input type="hidden" name="action" value="user_tracking_update_db">
+                        <?php wp_nonce_field('user_tracking_update_db_nonce'); ?>
+                        <button type="submit" class="button button-primary">Cập nhật Database</button>
+                    </form>
+                </div>
+            <?php else : ?>
+                <div class="notice notice-success">
+                    <p>Tất cả bảng và cột cần thiết đã tồn tại trong database.</p>
+                </div>
+            <?php endif; ?>
+        </div>
+
+        <div class="card">
             <h3>System Information</h3>
             <table class="widefat">
                 <tr>
@@ -74,6 +127,29 @@
         </div>
     </div>
 </div>
+
+<script>
+jQuery(document).ready(function($) {
+    $('#test-ga4').click(function(e) {
+        e.preventDefault();
+        $('#ga4-test-results').html('<p><span class="spinner is-active"></span> Testing GA4 connection...</p>');
+        
+        $.post(ajaxurl, {
+            action: 'user_tracking_test_ga4',
+            property_id: $('input[name="user_tracking_settings[ga4_property_id]"]').val(),
+            api_key: $('input[name="user_tracking_settings[ga4_api_key]"]').val()
+        }, function(response) {
+            if (response.success) {
+                $('#ga4-test-results').html('<div class="notice notice-success"><p>GA4 connection successful!</p></div>');
+            } else {
+                $('#ga4-test-results').html('<div class="notice notice-error"><p>GA4 test failed: ' + (response.data || 'Unknown error') + '</p></div>');
+            }
+        }).fail(function() {
+            $('#ga4-test-results').html('<div class="notice notice-error"><p>Failed to send test request</p></div>');
+        });
+    });
+});
+</script>
 
 <script>
 jQuery(document).ready(function($) {
