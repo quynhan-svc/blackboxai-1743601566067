@@ -382,7 +382,13 @@ class Admin {
         $api_key = $options['ga4_api_key'] ?? '';
         
         if (empty($property_id) || empty($api_key)) {
-            wp_send_json_error('GA4 Property ID or API Key not set');
+            wp_send_json_error(
+                'Vui lòng nhập đầy đủ GA4 Property ID và API Key trong trang Settings trước khi test.<br>' .
+                '1. Vào User Tracking > Settings<br>' .
+                '2. Nhập Property ID và API Key<br>' .
+                '3. Nhấn Save Settings<br>' .
+                '4. Thử lại nút Test Connection'
+            );
             return;
         }
 
@@ -497,6 +503,14 @@ class Admin {
         }
         if (isset($input['telegram_chat_id'])) {
             $output['telegram_chat_id'] = sanitize_text_field($input['telegram_chat_id']);
+        }
+        
+        // Sanitize GA4 settings
+        if (isset($input['ga4_property_id'])) {
+            $output['ga4_property_id'] = sanitize_text_field($input['ga4_property_id']);
+        }
+        if (isset($input['ga4_api_key'])) {
+            $output['ga4_api_key'] = sanitize_text_field($input['ga4_api_key']);
         }
         
         // Sanitize email settings
