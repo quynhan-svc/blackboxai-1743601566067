@@ -8,6 +8,7 @@ class Admin {
         add_action('admin_enqueue_scripts', [__CLASS__, 'enqueue_admin_assets']);
         add_action('admin_post_export_fraud_logs', [__CLASS__, 'export_fraud_logs']);
         add_action('admin_post_user_tracking_update_db', [__CLASS__, 'update_database']);
+        add_action('wp_ajax_user_tracking_test_ga4', [__CLASS__, 'test_ga4_connection']);
     }
 
     public static function update_database() {
@@ -372,6 +373,79 @@ class Admin {
             wp_send_json_success();
         } else {
             wp_send_json_error('Failed to send test email');
+        }
+    }
+
+    public static function test_ga4_connection() {
+        $options = get_option('user_tracking_settings');
+        $property_id = $options['ga4_property_id'] ?? '';
+        $api_key = $options['ga4_api_key'] ?? '';
+        
+        if (empty($property_id) || empty($api_key)) {
+            wp_send_json_error('GA4 Property ID or API Key not set');
+            return;
+        }
+
+        // Standardize property_id format
+        if (strpos($property_id, 'properties/') === false) {
+            if (strpos($property_id, 'G-') === 0) {
+                $property_id = 'properties/' . substr($property_id, 2);
+            } else {
+                $property_id = 'properties/' . $property_id;
+            }
+        }
+
+        try {
+            $url = "https://analyticsdata.googleapis.com/v1beta/$property_id:runReport";
+            
+            $args = [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $api_key,
+                    'Content-Type' => 'application/json'
+                ],
+                'body' => json_encode([
+                    'dateRanges' => [['startDate' => '7daysAgo', 'endDate' => 'today']],
+                    'metrics' => [['name' => 'activeUsers']]
+                ]),
+                'timeout' => 15
+            ];
+
+            $response = wp_remote_post($url, $args);
+
+            if (is_wp_error($response)) {
+                $error_message = $response->get_error_message();
+                if (strpos($error_message, 'cURL error 28') !== false) {
+                    wp_send_json_error('Request timeout. Please check your internet connection.');
+                } else {
+                    wp_send_json_error($error_message);
+                }
+                return;
+            }
+
+            $status_code = wp_remote_retrieve_response_code($response);
+            $body = wp_remote_retrieve_body($response);
+            
+            if ($status_code === 200) {
+                wp_send_json_success();
+            } else {
+                $error_data = json_decode($body, true);
+                $error_msg = $error_data['error']['message'] ?? 'Connection failed';
+                
+                if ($status_code === 403) {
+                    $error_msg .= '. Please ensure:';
+                    $error_msg .= '<br>- API Key is enabled for Analytics Data API';
+                    $error_msg .= '<br>- Property ID is correct';
+                    $error_msg .= '<br>- API Key has proper permissions';
+                } elseif ($status_code === 404) {
+                    $error_msg .= '. Please verify:';
+                    $error_msg .= '<br>- Property ID format is correct';
+                    $error_msg .= '<br>- Property exists in your GA4 account';
+                }
+                
+                wp_send_json_error($error_msg);
+            }
+        } catch (Exception $e) {
+            wp_send_json_error('Exception: ' . $e->getMessage());
         }
     }
 
