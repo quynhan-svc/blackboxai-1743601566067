@@ -16,10 +16,15 @@ class Database {
                 user_agent TEXT NOT NULL,
                 device_info TEXT,
                 referrer TEXT,
+                entry_time DATETIME,
+                exit_time DATETIME,
+                interactions TEXT,
+                ad_clicks INT DEFAULT 0,
                 created_at DATETIME NOT NULL,
                 PRIMARY KEY (session_id),
                 KEY idx_ip (ip_address),
-                KEY idx_created (created_at)
+                KEY idx_created (created_at),
+                KEY idx_entry (entry_time)
             ) $charset_collate;",
             
             "CREATE TABLE {$wpdb->prefix}user_tracking_pageviews (
@@ -58,6 +63,34 @@ class Database {
         update_option('user_tracking_install_date', current_time('mysql'));
     }
     
+    public static function check_schema() {
+        global $wpdb;
+        
+        $required_columns = [
+            "{$wpdb->prefix}user_tracking_sessions" => ['entry_time', 'exit_time', 'interactions', 'ad_clicks'],
+            "{$wpdb->prefix}user_tracking_fraud_logs" => ['session_id', 'urls_accessed', 'referrers'],
+        ];
+        
+        $missing = [];
+        
+        foreach ($required_columns as $table => $columns) {
+            $existing_columns = $wpdb->get_col("DESCRIBE $table", 0);
+            
+            foreach ($columns as $column) {
+                if (!in_array($column, $existing_columns)) {
+                    $missing[] = "$table.$column";
+                }
+            }
+        }
+        
+        // Check if fraud_patterns table exists
+        if ($wpdb->get_var("SHOW TABLES LIKE '{$wpdb->prefix}fraud_patterns'") != $wpdb->prefix.'fraud_patterns') {
+            $missing[] = "{$wpdb->prefix}fraud_patterns";
+        }
+        
+        return empty($missing) ? true : $missing;
+    }
+
     public static function uninstall() {
         global $wpdb;
         
