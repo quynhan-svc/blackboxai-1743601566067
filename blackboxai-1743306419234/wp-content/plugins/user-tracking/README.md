@@ -14,21 +14,54 @@ WordPress plugin to track user behavior from Google Ads and detect fraudulent cl
 - Comprehensive admin dashboard with charts and statistics
 - Responsive design for all devices
 
+## Thay đổi phiên bản (Changelog)
+
+### Tiếng Việt
+
+#### 1.0.7 (Hiện tại)
+- **Tính năng mới**:
+  - Tích hợp Google Analytics 4 (GA4) với báo cáo riêng
+  - Thêm bảng dữ liệu GA4 trong database
+  - Tự động kiểm tra và cập nhật cấu trúc database
+  - Trình hướng dẫn kết nối GA4 dễ sử dụng
+
+- **Cải tiến**:
+  - Tối ưu hiệu năng hệ thống
+  - Giao diện quản trị được cải thiện
+  - Xử lý lỗi chi tiết và rõ ràng hơn
+
+#### 1.0.6
+- Thêm tính năng xuất báo cáo chi tiết
+- Hiển thị thông tin thiết bị và vị trí
+- Theo dõi thời gian sử dụng phiên
+
+### English
+
 ## Changelog
 
-### 1.0.6 (Current)
-- **New Features**:
-  - Enhanced CSV export with complete session details including:
-    * Device information
-    * Geographic data (country/city)
-    * URLs accessed
-    * Referrer information
-    * Session duration metrics
+### 1.0.7 (Current)
+- **Tính năng mới**:
+  - Tích hợp GA4 với báo cáo riêng
+  - Thêm bảng `wp_ga4_data` để lưu trữ dữ liệu từ GA4
+  - Kiểm tra môi trường tự động phát hiện thiếu bảng/cột
+  - Nút cập nhật database trong trang cài đặt
+  - Trình thuật sĩ kết nối GA4
 
-- **Improvements**:
-  - Optimized database queries for export functionality
-  - Better handling of missing data (shows 'N/A' for empty fields)
-  - Improved data consistency between related tables
+- **Cải tiến**:
+  - Tối ưu truy vấn database
+  - Xử lý lỗi chi tiết hơn
+  - Giao diện quản lý thân thiện hơn
+
+### 1.0.6
+- **Tính năng mới**:
+  - Xuất CSV với đầy đủ thông tin phiên
+  - Thêm thông tin thiết bị, vị trí địa lý
+  - Theo dõi thời gian phiên
+
+### 1.0.5
+- Cải tiến quá trình cập nhật database
+- Thêm thông báo trạng thái real-time
+- Xử lý lỗi tốt hơn
 
 ### 1.0.5
 - Enhanced database update process with real-time status notifications
