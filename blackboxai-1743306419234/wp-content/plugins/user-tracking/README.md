@@ -39,7 +39,38 @@ WordPress plugin to track user behavior from Google Ads and detect fraudulent cl
 
 ## Changelog
 
-### 1.0.7 (Current)
+### 1.0.9 (Current)
+- **Cải tiến kết nối GA4**:
+  - Xử lý lỗi chi tiết hơn với các trường hợp:
+    * Sai API Key
+    * Sai Property ID  
+    * Lỗi timeout
+    * Lỗi permission
+  - Tự động chuẩn hóa Property ID
+  - Thông báo lỗi rõ ràng với hướng dẫn khắc phục
+
+- **Cải tiến khác**:
+  - Tối ưu thời gian chờ kết nối
+  - Nâng cao độ ổn định khi test kết nối
+
+### 1.0.8
+- **Cải tiến hướng dẫn**:
+  - Thêm hướng dẫn chi tiết từng bước lấy GA4 Property ID và API Key
+  - Hướng dẫn trực quan với hình ảnh minh họa
+  - Link trực tiếp đến trang quản trị Google Analytics và Google Cloud
+
+- **Tính năng mới**:
+  - Tích hợp Google Analytics 4 (GA4) với báo cáo riêng
+  - Thêm bảng dữ liệu GA4 trong database
+  - Tự động kiểm tra và cập nhật cấu trúc database
+  - Trình hướng dẫn kết nối GA4 dễ sử dụng
+
+- **Cải tiến khác**:
+  - Tối ưu giao diện cài đặt
+  - Thêm kiểm tra kết nối GA4
+  - Xử lý lỗi chi tiết hơn
+
+### 1.0.7
 - **Tính năng mới**:
   - Tích hợp GA4 với báo cáo riêng
   - Thêm bảng `wp_ga4_data` để lưu trữ dữ liệu từ GA4
