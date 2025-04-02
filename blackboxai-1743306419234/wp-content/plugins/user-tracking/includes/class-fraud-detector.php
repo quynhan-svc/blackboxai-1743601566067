@@ -9,13 +9,18 @@ class FraudDetector {
     public static function run_detection() {
         global $wpdb;
 
-        // 1. Detect high click rates from same IP
+        // 1. Detect high click rates from same IP with different User-Agents
         $high_click_ips = $wpdb->get_results("
-            SELECT ip_address, COUNT(*) as click_count 
+            SELECT 
+                ip_address, 
+                COUNT(DISTINCT user_agent) as ua_count,
+                COUNT(*) as click_count,
+                GROUP_CONCAT(DISTINCT url SEPARATOR '|') as urls
             FROM {$wpdb->prefix}user_tracking_sessions 
             WHERE created_at > DATE_SUB(NOW(), INTERVAL 10 MINUTE)
+            AND url LIKE '%?gad_source=1%'
             GROUP BY ip_address 
-            HAVING click_count > 50
+            HAVING ua_count > 3 OR click_count > 50
         ");
 
         foreach ($high_click_ips as $ip) {
@@ -23,13 +28,18 @@ class FraudDetector {
             self::send_alert("High click rate detected from IP: {$ip->ip_address} ({$ip->click_count} clicks)");
         }
 
-        // 2. Detect same User-Agent with different IPs
+        // 2. Detect same User-Agent with different IPs (only for gad_source=1)
         $suspicious_agents = $wpdb->get_results("
-            SELECT user_agent, COUNT(DISTINCT ip_address) as ip_count 
+            SELECT 
+                user_agent, 
+                COUNT(DISTINCT ip_address) as ip_count,
+                GROUP_CONCAT(DISTINCT ip_address SEPARATOR ', ') as ips,
+                GROUP_CONCAT(DISTINCT url SEPARATOR '|') as urls
             FROM {$wpdb->prefix}user_tracking_sessions 
             WHERE created_at > DATE_SUB(NOW(), INTERVAL 1 HOUR)
+            AND url LIKE '%?gad_source=1%'
             GROUP BY user_agent 
-            HAVING ip_count > 5
+            HAVING ip_count > 3
         ");
 
         foreach ($suspicious_agents as $agent) {
@@ -37,13 +47,18 @@ class FraudDetector {
             self::send_alert("Suspicious User-Agent: {$agent->user_agent} used from {$agent->ip_count} IPs");
         }
 
-        // 3. Detect same device info with different IPs
+        // 3. Detect same device info with different IPs (only for gad_source=1)
         $suspicious_devices = $wpdb->get_results("
-            SELECT device_info, COUNT(DISTINCT ip_address) as ip_count 
+            SELECT 
+                device_info, 
+                COUNT(DISTINCT ip_address) as ip_count,
+                GROUP_CONCAT(DISTINCT ip_address SEPARATOR ', ') as ips,
+                GROUP_CONCAT(DISTINCT url SEPARATOR '|') as urls
             FROM {$wpdb->prefix}user_tracking_sessions 
             WHERE created_at > DATE_SUB(NOW(), INTERVAL 1 HOUR)
+            AND url LIKE '%?gad_source=1%'
             GROUP BY device_info 
-            HAVING ip_count > 3 AND device_info != ''
+            HAVING ip_count > 2 AND device_info != ''
         ");
 
         foreach ($suspicious_devices as $device) {
