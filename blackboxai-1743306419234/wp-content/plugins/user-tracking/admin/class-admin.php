@@ -424,6 +424,12 @@ class Admin {
             return;
         }
 
+        // Validate API key format
+        if (!preg_match('/^[A-Za-z0-9_-]{39}$/', $api_key)) {
+            wp_send_json_error('API Key không đúng định dạng. Vui lòng kiểm tra lại.');
+            return;
+        }
+
         // Standardize property_id format
         if (strpos($property_id, 'properties/') === false) {
             if (strpos($property_id, 'G-') === 0) {
@@ -438,7 +444,6 @@ class Admin {
             
             $args = [
                 'headers' => [
-                    'Authorization' => 'Bearer ' . $api_key,
                     'Content-Type' => 'application/json'
                 ],
                 'body' => json_encode([
@@ -447,6 +452,9 @@ class Admin {
                 ]),
                 'timeout' => 15
             ];
+
+            // For API keys, we add it as query parameter
+            $url = add_query_arg(['key' => $api_key], $url);
 
             $response = wp_remote_post($url, $args);
 
