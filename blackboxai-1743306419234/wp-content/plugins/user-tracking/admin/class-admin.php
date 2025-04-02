@@ -195,6 +195,38 @@ class Admin {
                 'placeholder' => '-123456789'
             ]
         );
+
+        // Add GA4 settings section
+        add_settings_section(
+            'user_tracking_ga4_settings',
+            'GA4 Integration',
+            null,
+            'user-tracking-settings'
+        );
+
+        add_settings_field(
+            'ga4_property_id', 
+            'GA4 Property ID',
+            [__CLASS__, 'render_text_field'],
+            'user-tracking-settings',
+            'user_tracking_ga4_settings',
+            [
+                'name' => 'ga4_property_id',
+                'placeholder' => 'G-XXXXXXX or properties/XXXXXXX'
+            ]
+        );
+
+        add_settings_field(
+            'ga4_api_key',
+            'GA4 API Key',
+            [__CLASS__, 'render_text_field'],
+            'user-tracking-settings',
+            'user_tracking_ga4_settings',
+            [
+                'name' => 'ga4_api_key',
+                'type' => 'password'
+            ]
+        );
     }
 
     public static function enqueue_admin_assets($hook) {
@@ -339,7 +371,7 @@ class Admin {
         $options = get_option('user_tracking_settings');
         $value = $options[$args['name']] ?? '';
         ?>
-        <input type="text" 
+        <input type="<?php echo esc_attr($args['type'] ?? 'text'); ?>" 
                name="user_tracking_settings[<?php echo esc_attr($args['name']); ?>]" 
                value="<?php echo esc_attr($value); ?>"
                placeholder="<?php echo esc_attr($args['placeholder'] ?? ''); ?>"
