@@ -38,6 +38,17 @@ class Database {
                 FOREIGN KEY (session_id) REFERENCES {$wpdb->prefix}user_tracking_sessions(session_id) ON DELETE CASCADE
             ) $charset_collate;",
             
+            "CREATE TABLE {$wpdb->prefix}ga4_data (
+                id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+                property_id VARCHAR(50) NOT NULL,
+                metrics TEXT NOT NULL,
+                dimensions TEXT NOT NULL,
+                data LONGTEXT NOT NULL,
+                created_at DATETIME NOT NULL,
+                PRIMARY KEY (id),
+                KEY idx_property (property_id)
+            ) $charset_collate;",
+
             "CREATE TABLE {$wpdb->prefix}user_tracking_fraud_logs (
                 log_id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
                 session_id BIGINT UNSIGNED,
@@ -83,6 +94,7 @@ class Database {
         $required_columns = [
             "{$wpdb->prefix}user_tracking_sessions" => ['entry_time', 'exit_time', 'interactions', 'ad_clicks'],
             "{$wpdb->prefix}user_tracking_fraud_logs" => ['session_id', 'urls_accessed', 'referrers'],
+            "{$wpdb->prefix}ga4_data" => ['property_id', 'metrics', 'dimensions', 'created_at']
         ];
         
         $missing = [];
@@ -110,9 +122,10 @@ class Database {
         
         $tables = [
             "{$wpdb->prefix}user_tracking_sessions",
-            "{$wpdb->prefix}user_tracking_pageviews",
+            "{$wpdb->prefix}user_tracking_pageviews", 
             "{$wpdb->prefix}user_tracking_fraud_logs",
-            "{$wpdb->prefix}fraud_patterns"
+            "{$wpdb->prefix}fraud_patterns",
+            "{$wpdb->prefix}ga4_data"
         ];
         
         foreach ($tables as $table) {
