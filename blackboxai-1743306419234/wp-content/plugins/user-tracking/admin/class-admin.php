@@ -52,23 +52,43 @@ class Admin {
         // Open output stream
         $output = fopen('php://output', 'w');
 
-        // Write CSV header
+        // Write CSV header with all fields
         fputcsv($output, [
             'Date',
-            'IP Address', 
-            'User Agent',
+            'IP Address',
+            'User Agent', 
+            'Device Info',
+            'Country',
+            'City',
+            'URLs Accessed',
+            'Referrers',
             'Reason',
-            'Blocked'
+            'Blocked',
+            'Session Duration'
         ]);
 
-        // Write data rows
+        // Write data rows with all fields
         foreach ($logs as $log) {
+            // Get session data if available
+            $session_data = $log->session_id ? $wpdb->get_row($wpdb->prepare(
+                "SELECT device_info, country, city, TIMESTAMPDIFF(SECOND, entry_time, exit_time) as duration 
+                 FROM {$wpdb->prefix}user_tracking_sessions 
+                 WHERE session_id = %d", 
+                $log->session_id
+            )) : null;
+
             fputcsv($output, [
                 $log->created_at,
                 $log->ip_address,
                 $log->user_agent,
+                $session_data->device_info ?? 'N/A',
+                $session_data->country ?? 'N/A',
+                $session_data->city ?? 'N/A',
+                $log->urls_accessed ?? 'N/A',
+                $log->referrers ?? 'N/A',
                 $log->reason,
-                $log->is_blocked ? 'Yes' : 'No'
+                $log->is_blocked ? 'Yes' : 'No',
+                $session_data->duration ?? 'N/A'
             ]);
         }
 
