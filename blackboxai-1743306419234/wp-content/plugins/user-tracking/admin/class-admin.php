@@ -6,6 +6,54 @@ class Admin {
         add_action('admin_menu', [__CLASS__, 'add_admin_pages']);
         add_action('admin_init', [__CLASS__, 'register_settings']);
         add_action('admin_enqueue_scripts', [__CLASS__, 'enqueue_admin_assets']);
+        add_action('admin_post_export_fraud_logs', [__CLASS__, 'export_fraud_logs']);
+    }
+
+    public static function export_fraud_logs() {
+        global $wpdb;
+        
+        // Verify nonce
+        if (!isset($_POST['_wpnonce']) || !wp_verify_nonce($_POST['_wpnonce'], 'export_fraud_logs_nonce')) {
+            wp_die('Invalid request');
+        }
+
+        // Get logs data
+        $logs = $wpdb->get_results("
+            SELECT * FROM {$wpdb->prefix}user_tracking_fraud_logs 
+            ORDER BY created_at DESC
+        ");
+
+        // Set headers for CSV download
+        header('Content-Type: text/csv');
+        header('Content-Disposition: attachment; filename=fraud-logs-' . date('Y-m-d') . '.csv');
+        header('Pragma: no-cache');
+        header('Expires: 0');
+
+        // Open output stream
+        $output = fopen('php://output', 'w');
+
+        // Write CSV header
+        fputcsv($output, [
+            'Date',
+            'IP Address', 
+            'User Agent',
+            'Reason',
+            'Blocked'
+        ]);
+
+        // Write data rows
+        foreach ($logs as $log) {
+            fputcsv($output, [
+                $log->created_at,
+                $log->ip_address,
+                $log->user_agent,
+                $log->reason,
+                $log->is_blocked ? 'Yes' : 'No'
+            ]);
+        }
+
+        fclose($output);
+        exit;
     }
 
     public static function add_admin_pages() {
