@@ -1,0 +1,101 @@
+/* Main Dashboard Styles */
+.user-tracking-dashboard {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.stat-card {
+    background: #fff;
+    padding: 20px;
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+.stat-card h3 {
+    margin-top: 0;
+    color: #666;
+}
+
+.stat-card p {
+    font-size: 2em;
+    font-weight: bold;
+    margin: 10px 0 0;
+}
+
+.chart-container {
+    background: #fff;
+    padding: 20px;
+    margin-bottom: 30px;
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.top-countries ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    background: #fff;
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.top-countries li {
+    padding: 10px 15px;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+}
+
+/* Fraud Logs Styles */
+.fraud-logs-container {
+    margin-bottom: 20px;
+}
+
+.fraud-actions {
+    display: flex;
+    gap: 10px;
+}
+
+/* Settings Page Styles */
+.settings-advanced {
+    margin-top: 40px;
+}
+
+.settings-advanced .card {
+    background: #fff;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.settings-advanced .card h3 {
+    margin-top: 0;
+}
+
+.button-danger {
+    background: #dc3232;
+    border-color: #dc3232;
+    color: white;
+}
+
+.button-danger:hover {
+    background: #a00;
+    border-color: #a00;
+    color: white;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 782px) {
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+}
