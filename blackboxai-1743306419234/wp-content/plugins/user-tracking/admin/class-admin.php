@@ -16,7 +16,7 @@ class Admin {
         }
 
         require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-        UserTracking\Database::install();
+        \UserTracking\Database::install();
         
         wp_redirect(admin_url('admin.php?page=user-tracking&db_updated=1'));
         exit;
