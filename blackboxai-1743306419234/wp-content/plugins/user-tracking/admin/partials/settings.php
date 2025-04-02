@@ -81,9 +81,13 @@
                             <strong>Hướng dẫn lấy API Key:</strong><br>
                             1. Truy cập <a href="https://console.cloud.google.com/apis/credentials" target="_blank">Google Cloud Console</a><br>
                             2. Chọn project tương ứng với GA4 property<br>
-                            3. Vào "APIs & Services" > "Credentials"<br>
-                            4. Nhấn "Create Credentials" > "API Key"<br>
-                            5. Sao chép key và dán vào ô trên
+                            3. Vào "APIs & Services" > "Library"<br>
+                            4. Tìm và bật "Analytics Data API"<br>
+                            5. Vào "Credentials" > "Create Credentials" > "API Key"<br>
+                            6. Nhấn "Restrict Key" và chọn:<br>
+                               - APIs: Analytics Data API<br>
+                               - Application restrictions: None<br>
+                            7. Sao chép key và dán vào ô trên
                         </p>
                         <p class="description">
                             <strong>Hướng dẫn lấy Property ID:</strong><br>
