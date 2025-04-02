@@ -1,5 +1,18 @@
-<div class="wrap user-tracking-dashboard">
-    <h1>User Tracking Dashboard</h1>
+    <div class="wrap user-tracking-dashboard">
+        <h1>User Tracking Dashboard</h1>
+        
+        <?php 
+        $db_check = UserTracking\Database::check_schema();
+        if ($db_check !== true) : ?>
+        <div class="notice notice-warning">
+            <p><strong>Database cần cập nhật:</strong> Các trường sau chưa tồn tại: <?php echo implode(', ', $db_check); ?></p>
+            <form method="post" action="<?php echo admin_url('admin-post.php'); ?>">
+                <input type="hidden" name="action" value="user_tracking_update_db">
+                <?php wp_nonce_field('user_tracking_update_db_nonce'); ?>
+                <button type="submit" class="button button-primary">Cập nhật Database</button>
+            </form>
+        </div>
+        <?php endif; ?>
     
     <div class="loading-overlay" style="display:none;">
         <div class="spinner is-active"></div>
