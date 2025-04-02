@@ -1,7 +1,27 @@
     <div class="wrap user-tracking-dashboard">
         <h1>User Tracking Dashboard</h1>
         
+        <?php
+        // Hiển thị thông báo kết quả cập nhật
+        if (isset($_GET['db_updated'])) : ?>
+        <div class="notice notice-success">
+            <p>Database đã được cập nhật thành công!</p>
+        </div>
+        <?php elseif (isset($_GET['db_error'])) : ?>
+        <div class="notice notice-error">
+            <p>Lỗi khi cập nhật database: <?php echo esc_html($_GET['message']); ?></p>
+        </div>
+        <?php endif;
+
+        // Kiểm tra nếu đang trong quá trình cập nhật
+        if (get_transient('user_tracking_db_updating')) : ?>
+        <div class="notice notice-info">
+            <p>Đang cập nhật database, vui lòng chờ...</p>
+        </div>
         <?php 
+        delete_transient('user_tracking_db_updating');
+        endif;
+
         $db_check = UserTracking\Database::check_schema();
         if ($db_check !== true) : ?>
         <div class="notice notice-warning">
