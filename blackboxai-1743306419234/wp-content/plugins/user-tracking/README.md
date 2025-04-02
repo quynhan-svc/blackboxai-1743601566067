@@ -16,12 +16,24 @@ WordPress plugin to track user behavior from Google Ads and detect fraudulent cl
 
 ## Changelog
 
-### 1.0.5 (Current)
+### 1.0.6 (Current)
+- **New Features**:
+  - Enhanced CSV export with complete session details including:
+    * Device information
+    * Geographic data (country/city)
+    * URLs accessed
+    * Referrer information
+    * Session duration metrics
+
 - **Improvements**:
-  - Enhanced database update process with real-time status notifications
-  - Added loading indicators during database updates
-  - Better error handling and display for database operations
-  - Disabled update button during processing to prevent duplicate requests
+  - Optimized database queries for export functionality
+  - Better handling of missing data (shows 'N/A' for empty fields)
+  - Improved data consistency between related tables
+
+### 1.0.5
+- Enhanced database update process with real-time status notifications
+- Added loading indicators during database updates
+- Better error handling and display
 
 ### 1.0.4
 - **New Features**:
