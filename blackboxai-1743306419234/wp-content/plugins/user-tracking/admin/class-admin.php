@@ -7,6 +7,19 @@ class Admin {
         add_action('admin_init', [__CLASS__, 'register_settings']);
         add_action('admin_enqueue_scripts', [__CLASS__, 'enqueue_admin_assets']);
         add_action('admin_post_export_fraud_logs', [__CLASS__, 'export_fraud_logs']);
+        add_action('admin_post_user_tracking_update_db', [__CLASS__, 'update_database']);
+    }
+
+    public static function update_database() {
+        if (!isset($_POST['_wpnonce']) || !wp_verify_nonce($_POST['_wpnonce'], 'user_tracking_update_db_nonce')) {
+            wp_die('Invalid request');
+        }
+
+        require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+        UserTracking\Database::install();
+        
+        wp_redirect(admin_url('admin.php?page=user-tracking&db_updated=1'));
+        exit;
     }
 
     public static function export_fraud_logs() {
