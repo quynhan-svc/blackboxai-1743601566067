@@ -40,14 +40,28 @@ class Database {
             
             "CREATE TABLE {$wpdb->prefix}user_tracking_fraud_logs (
                 log_id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+                session_id BIGINT UNSIGNED,
                 ip_address VARCHAR(45) NOT NULL,
                 user_agent TEXT,
+                urls_accessed TEXT,
+                referrers TEXT,
                 reason TEXT NOT NULL,
                 is_blocked BOOLEAN DEFAULT 0,
                 created_at DATETIME NOT NULL,
                 PRIMARY KEY (log_id),
                 KEY idx_ip (ip_address),
-                KEY idx_blocked (is_blocked)
+                KEY idx_blocked (is_blocked),
+                FOREIGN KEY (session_id) REFERENCES {$wpdb->prefix}user_tracking_sessions(session_id) ON DELETE SET NULL
+            ) $charset_collate;",
+            
+            "CREATE TABLE {$wpdb->prefix}fraud_patterns (
+                pattern_id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+                ip_address VARCHAR(45),
+                device_hash VARCHAR(255),
+                pattern TEXT NOT NULL,
+                last_occurrence DATETIME NOT NULL,
+                PRIMARY KEY (pattern_id),
+                KEY idx_ip_hash (ip_address, device_hash)
             ) $charset_collate;"
         ];
         
@@ -97,7 +111,8 @@ class Database {
         $tables = [
             "{$wpdb->prefix}user_tracking_sessions",
             "{$wpdb->prefix}user_tracking_pageviews",
-            "{$wpdb->prefix}user_tracking_fraud_logs"
+            "{$wpdb->prefix}user_tracking_fraud_logs",
+            "{$wpdb->prefix}fraud_patterns"
         ];
         
         foreach ($tables as $table) {
