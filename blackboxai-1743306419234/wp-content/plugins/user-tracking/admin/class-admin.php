@@ -16,9 +16,16 @@ class Admin {
         }
 
         require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-        \UserTracking\Database::install();
         
-        wp_redirect(admin_url('admin.php?page=user-tracking&db_updated=1'));
+        // Thêm thông báo đang cập nhật
+        set_transient('user_tracking_db_updating', true, 30);
+        
+        try {
+            \UserTracking\Database::install();
+            wp_redirect(admin_url('admin.php?page=user-tracking&db_updated=1'));
+        } catch (Exception $e) {
+            wp_redirect(admin_url('admin.php?page=user-tracking&db_error=1&message=' . urlencode($e->getMessage())));
+        }
         exit;
     }
 
