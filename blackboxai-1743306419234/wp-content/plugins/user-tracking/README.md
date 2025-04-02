@@ -16,7 +16,14 @@ WordPress plugin to track user behavior from Google Ads and detect fraudulent cl
 
 ## Changelog
 
-### 1.0.4 (Current)
+### 1.0.5 (Current)
+- **Improvements**:
+  - Enhanced database update process with real-time status notifications
+  - Added loading indicators during database updates
+  - Better error handling and display for database operations
+  - Disabled update button during processing to prevent duplicate requests
+
+### 1.0.4
 - **New Features**:
   - Added database version check and update system
   - Implemented advanced fraud detection filters:
