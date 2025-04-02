@@ -2,6 +2,10 @@
 
 WordPress plugin to track user behavior from Google Ads and detect fraudulent clicks.
 
+## Requirements
+- WordPress 6.7.2 or higher
+- PHP 8.0 or higher
+
 ## Features
 
 - Tracks user sessions with detailed information (IP, URLs accessed, referrers)
@@ -12,7 +16,19 @@ WordPress plugin to track user behavior from Google Ads and detect fraudulent cl
 
 ## Changelog
 
-### 1.0.2 (Current)
+### 1.0.3 (Current)
+- Improved fraud detection logic:
+  - Only check requests with ?gad_source=1 in main URL
+  - Separate detection conditions:
+    * Same IP + different User-Agents
+    * Same User-Agent + different IPs 
+    * Same device + different IPs
+  - Lower thresholds for detection
+- Added more detailed fraud logs (IPs, URLs)
+- Fixed chart height limit (max 600px) in dashboard
+- Improved admin UI with better data visualization
+
+### 1.0.2
 - Added detailed fraud alerts with IP, URLs and referrer information
 - Fixed chart height limit (max 600px) in dashboard
 - Improved admin UI with better data visualization
