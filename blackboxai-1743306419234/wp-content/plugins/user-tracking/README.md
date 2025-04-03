@@ -39,7 +39,19 @@ WordPress plugin to track user behavior from Google Ads and detect fraudulent cl
 
 ## Changelog
 
-### 1.0.9 (Current)
+### 1.1.0 (Current)
+- **Cải tiến kết nối GA4**:
+  - Sửa lỗi authentication không hợp lệ
+  - Thêm kiểm tra định dạng API Key (39 ký tự)
+  - Tự động chuẩn hóa Property ID
+  - Hướng dẫn cấu hình API Key chi tiết
+
+- **Cải tiến khác**:
+  - Tối ưu quá trình lưu settings
+  - Thêm debug log cho quá trình kết nối
+  - Cải thiện thông báo lỗi
+
+### 1.0.9
 - **Cải tiến kết nối GA4**:
   - Xử lý lỗi chi tiết hơn với các trường hợp:
     * Sai API Key
